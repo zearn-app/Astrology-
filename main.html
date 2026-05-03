@@ -4,9 +4,9 @@
 <meta charset="UTF-8">    
 <meta name="viewport" content="width=device-width, initial-scale=1.0">    
 <title>Astro Reveal ✨</title>    
-  
+
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">    
-  
+
 <style>    
 body {    
   margin: 0;    
@@ -19,13 +19,13 @@ body {
   height: 100vh;    
   overflow: hidden;    
 }    
-  
+
 .container {    
   width: 90%;    
   max-width: 400px;    
   text-align: center;    
 }    
-  
+
 .card {    
   background: rgba(255,255,255,0.05);    
   padding: 25px;    
@@ -34,7 +34,7 @@ body {
   box-shadow: 0 0 20px rgba(255,255,255,0.1);    
   animation: fadeIn 0.6s ease;    
 }    
-  
+
 input {    
   width: 100%;    
   padding: 12px;    
@@ -43,7 +43,7 @@ input {
   border: none;    
   outline: none;    
 }    
-  
+
 button {    
   margin-top: 20px;    
   padding: 12px 20px;    
@@ -54,38 +54,68 @@ button {
   cursor: pointer;    
   font-weight: bold;    
 }    
-  
+
 button:hover {    
   opacity: 0.8;    
 }    
-  
+
 @keyframes fadeIn {    
   from { opacity: 0; transform: translateY(20px); }    
   to { opacity: 1; transform: translateY(0); }    
 }    
-  
-.result {    
-  font-size: 14px;    
-  line-height: 1.6;    
-}    
-  
+
 .loader {  
   margin-top: 20px;  
   font-size: 14px;  
   opacity: 0.8;  
   animation: pulse 1.5s infinite;  
 }  
-  
+
 @keyframes pulse {  
   0% {opacity: 0.3;}  
   50% {opacity: 1;}  
   100% {opacity: 0.3;}  
 }  
+
+/* 🆕 RESULT UI */
+.result-card {
+  background: rgba(255,255,255,0.07);
+  margin-top: 15px;
+  padding: 15px;
+  border-radius: 15px;
+  text-align: left;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeUp 0.6s forwards;
+}
+
+.result-card h3 {
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+
+.icon {
+  margin-right: 6px;
+}
+
+.positive { color: #00ffcc; }
+.warning { color: #ffcc00; }
+.future { color: #66a3ff; }
+.love { color: #ff6ec4; }
+.danger { color: #ff4d6d; }
+
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 </style>    
 </head>    
-  
+
 <body>    
-  
+
 <div class="container">    
   <div class="card" id="card">    
     <h2 id="question">Enter your name</h2>    
@@ -93,28 +123,24 @@ button:hover {
     <button onclick="next()">Next ✨</button>    
   </div>    
 </div>    
-  
+
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>  
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>  
-  
+
 <script>  
 
 const firebaseConfig = {      
-  apiKey: "AIzaSyAbYt_z5GaqOTcVlz3FRjssTwC7Uzv_MdA",      
-  authDomain: "information-b9593.firebaseapp.com",      
-  projectId: "information-b9593",      
-  storageBucket: "information-b9593.firebasestorage.app",      
-  messagingSenderId: "767588407430",      
-  appId: "1:767588407430:web:006bb7ff0b7c66b751d907",      
-  measurementId: "G-CZ9KF73J6T"      
+  apiKey: "YOUR_KEY",      
+  authDomain: "YOUR_DOMAIN",      
+  projectId: "YOUR_ID",      
 };      
-  
+
 firebase.initializeApp(firebaseConfig);      
 const db = firebase.firestore();      
-  
+
 let step = 0;        
 let answers = [];        
-  
+
 const questions = [        
   "Enter your name",        
   "Your age",        
@@ -127,177 +153,103 @@ const questions = [
   "Your dream",        
   "Someone you trust the most"        
 ];        
-  
+
 function next() {        
   const input = document.getElementById("input");        
   if(input.value.trim() === "") return;      
-  
+
   answers.push(input.value);        
   input.value = "";        
   step++;        
-  
+
   if (step < questions.length) {        
     document.getElementById("question").innerText = questions[step];        
   } else {        
     loadingScreen();        
   }        
 }        
-  
+
 function loadingScreen(){      
   document.getElementById("card").innerHTML = `      
     <h2>🔮 Reading Your Stars...</h2>      
     <div class="loader">Analyzing cosmic energy...</div>      
   `;      
-  
   setTimeout(showResult, 3000);      
 }      
-  
+
 function letterValue(name){  
-  let char = name.trim().toLowerCase().charCodeAt(0);  
-  return char - 96;  
+  return name.trim().toLowerCase().charCodeAt(0) - 96;  
 }  
 
-// 🆕 Marriage Logic
 function calculateMarriageLetter(name, loveName, hateName){
   let total = name.length + loveName.length;
-
-  if(total > 26){
-    total = total - hateName.length;
-  }
-
-  // wrap again if still >26
-  while(total > 26){
-    total -= 26;
-  }
-
+  if(total > 26) total -= hateName.length;
+  while(total > 26) total -= 26;
   return String.fromCharCode(96 + total);
 }
-  
+
 function generateAstroResult(){  
   const name = answers[0];  
   const hateName = answers[4];  
   const loveName = answers[5];  
-  
+
   const mainVal = letterValue(name);  
   const hateVal = letterValue(hateName);  
   const loveVal = letterValue(loveName);  
-  
-  const futureOutcome = (hateVal % 2 === 0)  
-    ? "moving in a stable direction"  
-    : "facing some hidden challenges ahead";  
-  
-  const successOutcome = (loveVal % 2 === 0)  
-    ? "aligned with success"  
-    : "requiring more effort to reach success";  
-  
-  const lifePhase = (mainVal % 2 === 0)  
-    ? "positive"  
-    : "challenging";  
-  
-  let length = name.length;  
-  let timePeriod = "";  
-  
-  if(length <= 3){  
-    timePeriod = (Math.random() > 0.5 ? "1 year" : "2 years");  
-  } else if(length <= 9){  
-    timePeriod = Math.floor(Math.random()*9 + 1) + " months";  
-  } else {  
-    timePeriod = Math.floor(Math.random()*25 + 5) + " days";  
-  }  
 
-  // 🆕 marriage result
-  const marriageLetter = calculateMarriageLetter(name, loveName, hateName);
-  
   return {  
-    futureOutcome,  
-    successOutcome,  
-    lifePhase,  
-    timePeriod,
-    marriageLetter
+    futureOutcome: (hateVal % 2 === 0) ? "moving in a stable direction" : "facing hidden challenges",  
+    successOutcome: (loveVal % 2 === 0) ? "aligned with success" : "requiring more effort",  
+    lifePhase: (mainVal % 2 === 0) ? "positive" : "challenging",  
+    timePeriod: Math.floor(Math.random()*12+1) + " months",
+    marriageLetter: calculateMarriageLetter(name, loveName, hateName)
   };  
 }  
-  
+
 function showResult() {        
   const name = answers[0];        
-  const result = generateAstroResult();  
+  const r = generateAstroResult();  
 
   document.getElementById("card").innerHTML = `        
     <h2>✨ Astrology Reading ✨</h2>        
 
-    <div class="result" id="typing"></div>
+    <div class="result-card positive" style="animation-delay:0.2s">
+      <h3>🌟 POSITIVE</h3>
+      You are in a <b>${r.lifePhase}</b> phase. Your path is <b>${r.successOutcome}</b>.
+    </div>
+
+    <div class="result-card warning" style="animation-delay:0.6s">
+      <h3>⚠️ NEGATIVES</h3>
+      Your journey may be <b>${r.futureOutcome}</b>.
+    </div>
+
+    <div class="result-card future" style="animation-delay:1s">
+      <h3>🔮 FUTURE</h3>
+      This phase lasts <b>${r.timePeriod}</b>. Changes are coming soon.
+    </div>
+
+    <div class="result-card love" style="animation-delay:1.4s">
+      <h3>💍 MARRIAGE</h3>
+      A strong connection with letter <b>${r.marriageLetter.toUpperCase()}</b>.
+    </div>
+
+    <div class="result-card danger" style="animation-delay:1.8s">
+      <h3>🔥 ENEMY</h3>
+      Be careful whom you trust. Not everyone supports you.
+    </div>
   `;        
 
-  const text = `
-
-👤 Dear ${name}
-
-🌟 POSITIVE
-You are currently in a ${result.lifePhase} phase which brings growth, learning and inner strength.  
-Your intentions show that your path is ${result.successOutcome}.  
-
-⚠️ NEGATIVES
-There are certain hidden influences around you.  
-Some energies indicate that your journey may be ${result.futureOutcome}.  
-
-🔮 FUTURE
-Your life direction is shifting slowly.  
-This phase will last approximately ${result.timePeriod}.  
-Important changes are approaching soon.  
-
-💍 MARRIAGE LIFE
-Your destiny reveals a strong connection with someone whose name carries the letter "${result.marriageLetter.toUpperCase()}".  
-This connection will play an important role in your emotional life.  
-
-🔥 ENEMY STATUS
-There are people who may not wish for your success.  
-Stay careful with trust and avoid sharing your plans with everyone.  
-
-✨ The universe gives signals… it's up to you to understand them.
-
-  `;
-
-  typeEffect(text);  
-  saveToFirebase(result);  
-}function saveToFirebase(result){      
-  db.collection("astro_users").add({      
-    name: answers[0],      
-    age: answers[1],      
-    place: answers[2],      
-    luckyNumber: answers[3],      
-    hateName: answers[4],      
-    loveName: answers[5],      
-    futurePlan: answers[6],      
-    fear: answers[7],      
-    dream: answers[8],      
-    trustPerson: answers[9],      
-  
-    futureOutcome: result.futureOutcome,  
-    successOutcome: result.successOutcome,  
-    lifePhase: result.lifePhase,  
-    timePeriod: result.timePeriod,
-    marriageLetter: result.marriageLetter,
-  
-    createdAt: new Date()      
-  })      
-  .then(() => console.log("Saved ✅"))      
-  .catch((error) => console.error(error));      
+  saveToFirebase(r);  
 }  
 
-function typeEffect(text){      
-  let i = 0;      
-  const speed = 30;      
-  const typing = document.getElementById("typing");      
-  
-  function type(){      
-    if(i < text.length){      
-      typing.innerHTML += text.charAt(i);      
-      i++;      
-      setTimeout(type, speed);      
-    }      
-  }      
-  type();      
-}      
+function saveToFirebase(result){      
+  db.collection("astro_users").add({      
+    name: answers[0],      
+    createdAt: new Date()      
+  });      
+}  
+
 </script>  
-  
+
 </body>    
 </html>
