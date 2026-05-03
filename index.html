@@ -93,118 +93,195 @@ button:hover {
     <button onclick="next()">Next ✨</button>  
   </div>  
 </div>  
-  
-<script>  
-let step = 0;  
-let answers = [];  
-  
-const questions = [  
-  "Enter your name",  
-  "Your age",  
-  "Your place",  
-  "Your lucky number",  
-  "A name you hate",  
-  "A name you love",  
-  "Your future plan",  
-  "Your biggest fear",  
-  "Your dream",  
-  "Someone you trust the most"  
-];  
 
-const zodiacSigns = ["Aries ♈", "Taurus ♉", "Gemini ♊", "Cancer ♋", "Leo ♌", "Virgo ♍", "Libra ♎", "Scorpio ♏", "Sagittarius ♐", "Capricorn ♑", "Aquarius ♒", "Pisces ♓"];
+<!-- 🔥 Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
-const predictions = [
-  "A powerful opportunity is approaching you.",
-  "Someone from your past will re-enter your life.",
-  "You will soon face a decision that changes everything.",
-  "A hidden talent inside you will rise soon.",
-  "Unexpected happiness is closer than you think."
-];
+<script>
+// 🔥 Firebase Config
+const firebaseConfig = {    
+  apiKey: "AIzaSyAbYt_z5GaqOTcVlz3FRjssTwC7Uzv_MdA",    
+  authDomain: "information-b9593.firebaseapp.com",    
+  projectId: "information-b9593",    
+  storageBucket: "information-b9593.firebasestorage.app",    
+  messagingSenderId: "767588407430",    
+  appId: "1:767588407430:web:006bb7ff0b7c66b751d907",    
+  measurementId: "G-CZ9KF73J6T"    
+};    
 
-function next() {  
-  const input = document.getElementById("input");  
+firebase.initializeApp(firebaseConfig);    
+const db = firebase.firestore();    
 
-  if(input.value.trim() === "") return;
+let step = 0;      
+let answers = [];      
 
-  answers.push(input.value);  
-  input.value = "";  
-  step++;  
-  
-  if (step < questions.length) {  
-    document.getElementById("question").innerText = questions[step];  
-  } else {  
-    loadingScreen();  
-  }  
-}  
+const questions = [      
+  "Enter your name",      
+  "Your age",      
+  "Your place",      
+  "Your lucky number",      
+  "A name you hate",      
+  "A name you love",      
+  "Your future plan",      
+  "Your biggest fear",      
+  "Your dream",      
+  "Someone you trust the most"      
+];      
 
-function loadingScreen(){
-  document.getElementById("card").innerHTML = `
-    <h2>🔮 Reading Your Stars...</h2>
-    <div class="loader">Analyzing cosmic energy...</div>
-  `;
+function next() {      
+  const input = document.getElementById("input");      
+  if(input.value.trim() === "") return;    
 
-  setTimeout(showResult, 3000);
+  answers.push(input.value);      
+  input.value = "";      
+  step++;      
+      
+  if (step < questions.length) {      
+    document.getElementById("question").innerText = questions[step];      
+  } else {      
+    loadingScreen();      
+  }      
+}      
+
+function loadingScreen(){    
+  document.getElementById("card").innerHTML = `    
+    <h2>🔮 Reading Your Stars...</h2>    
+    <div class="loader">Analyzing cosmic energy...</div>    
+  `;    
+
+  setTimeout(showResult, 3000);    
+}    
+
+// 🔤 Convert first letter to number
+function letterValue(name){
+  let char = name.trim().toLowerCase().charCodeAt(0);
+  return char - 96; // a=1, z=26
 }
 
-function showResult() {  
-  const name = answers[0];  
-  const age = parseInt(answers[1]);  
-  const place = answers[2];  
-  const lucky = answers[3];  
-  const loveName = answers[5];  
-  const future = answers[6];  
-  const fear = answers[7];  
-  const dream = answers[8];  
-  const trust = answers[9];  
+// 🔮 Generate result using hidden logic
+function generateAstroResult(){
+  const name = answers[0];
+  const hateName = answers[4];
+  const loveName = answers[5];
 
-  const zodiac = zodiacSigns[age % 12];
-  const randomPrediction = predictions[Math.floor(Math.random()*predictions.length)];
+  const mainVal = letterValue(name);
+  const hateVal = letterValue(hateName);
+  const loveVal = letterValue(loveName);
 
-  document.getElementById("card").innerHTML = `  
-    <h2>✨ Astrology Reading ✨</h2>  
-    <p class="result" id="typing"></p>
-  `;  
+  // Future direction (hate name)
+  const futureOutcome = (hateVal % 2 === 0)
+    ? "moving in a stable direction"
+    : "facing some hidden challenges ahead";
 
-  const text = `
-Dear ${name}, from ${place} 🌌...
+  // Success (love name)
+  const successOutcome = (loveVal % 2 === 0)
+    ? "aligned with success"
+    : "requiring more effort to reach success";
 
-Your aura aligns with <b>${zodiac}</b>, a sign of strong emotional depth and hidden power.
+  // Life phase (main name)
+  const lifePhase = (mainVal % 2 === 0)
+    ? "positive"
+    : "challenging";
 
-Your lucky number <b>${lucky}</b> is not random... it connects to your life path.
+  // Time period
+  let length = name.length;
+  let timePeriod = "";
 
-The person you love, <b>${loveName}</b>, has a deeper connection with your destiny than you realize...
+  if(length <= 3){
+    timePeriod = (Math.random() > 0.5 ? "1 year" : "2 years");
+  } else if(length <= 9){
+    timePeriod = Math.floor(Math.random()*9 + 1) + " months";
+  } else {
+    timePeriod = Math.floor(Math.random()*25 + 5) + " days";
+  }
 
-Your dream "<b>${dream}</b>" is already written in your stars. 🌠
+  return {
+    futureOutcome,
+    successOutcome,
+    lifePhase,
+    timePeriod
+  };
+}
 
-But your fear "<b>${fear}</b>" is the only thing holding you back.
+function showResult() {      
+  const name = answers[0];      
 
-${randomPrediction}
+  const result = generateAstroResult();
 
-Someone you trust, <b>${trust}</b>, will soon play a crucial role in your journey.
+  document.getElementById("card").innerHTML = `      
+    <h2>✨ Astrology Reading ✨</h2>      
+    <p class="result" id="typing"></p>    
+  `;      
 
-Within 3–6 months, your future plan "<b>${future}</b>" will begin to take shape...
+  const text = `    
+Dear ${name} 🌌    
 
-✨ Trust the universe. Your time is coming.
+The energy surrounding your path reveals something interesting…    
+
+A certain influence in your life carries a strong hidden vibration.    
+This vibration suggests that your future direction is ${result.futureOutcome}.    
+
+Your inner intentions and long-term vision show a clear sign —    
+the path you are walking is ${result.successOutcome}.    
+
+Right now, your life phase is entering a ${result.lifePhase} cycle.    
+This phase will continue for approximately ${result.timePeriod}.    
+
+During this time, your decisions, emotions, and surroundings    
+will shape a major turning point in your journey.    
+
+✨ The universe doesn’t decide your destiny…    
+but it always leaves clues for those who notice.    
 `;
 
   typeEffect(text);
-}
 
-function typeEffect(text){
-  let i = 0;
-  const speed = 30;
-  const typing = document.getElementById("typing");
+  // 🔥 Save everything including result
+  saveToFirebase(result, text);
+}      
 
-  function type(){
-    if(i < text.length){
-      typing.innerHTML += text.charAt(i);
-      i++;
-      setTimeout(type, speed);
-    }
-  }
-  type();
-}
-</script>  
+function saveToFirebase(result, finalText){    
+  db.collection("astro_users").add({    
+    name: answers[0],    
+    age: answers[1],    
+    place: answers[2],    
+    luckyNumber: answers[3],    
+    hateName: answers[4],    
+    loveName: answers[5],    
+    futurePlan: answers[6],    
+    fear: answers[7],    
+    dream: answers[8],    
+    trustPerson: answers[9],    
+
+    // 🔮 Saved result
+    futureOutcome: result.futureOutcome,
+    successOutcome: result.successOutcome,
+    lifePhase: result.lifePhase,
+    timePeriod: result.timePeriod,
+    fullResult: finalText,
+
+    createdAt: new Date()    
+  })    
+  .then(() => console.log("Saved with result 🔥"))    
+  .catch((error) => console.error(error));    
+}    
+
+function typeEffect(text){    
+  let i = 0;    
+  const speed = 30;    
+  const typing = document.getElementById("typing");    
+
+  function type(){    
+    if(i < text.length){    
+      typing.innerHTML += text.charAt(i);    
+      i++;    
+      setTimeout(type, speed);    
+    }    
+  }    
+  type();    
+}    
+</script>
   
 </body>  
-  </html>
+</html>
