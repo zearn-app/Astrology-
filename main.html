@@ -220,37 +220,45 @@ function generateAstroResult(){
 function showResult() {        
   const name = answers[0];        
   const result = generateAstroResult();  
-  
+
   document.getElementById("card").innerHTML = `        
     <h2>✨ Astrology Reading ✨</h2>        
-    <p class="result" id="typing"></p>      
-  `;        
-  
-  const text = `      
-Dear ${name} 🌌      
-  
-The energy surrounding your path reveals something interesting…      
-  
-A certain influence in your life carries a strong hidden vibration.      
-This vibration suggests that your future direction is ${result.futureOutcome}.      
-  
-Your inner intentions and long-term vision show a clear sign —      
-the path you are walking is ${result.successOutcome}.      
-  
-Right now, your life phase is entering a ${result.lifePhase} cycle.      
-This phase will continue for approximately ${result.timePeriod}.      
 
-💍 A hidden alignment in your destiny points toward a significant connection linked with the letter "${result.marriageLetter.toUpperCase()}".      
-  
-✨ The universe doesn’t decide your destiny…      
-but it always leaves clues for those who notice.      
-`;  
-  
+    <div class="result" id="typing"></div>
+  `;        
+
+  const text = `
+
+👤 Dear ${name}
+
+🌟 POSITIVE
+You are currently in a ${result.lifePhase} phase which brings growth, learning and inner strength.  
+Your intentions show that your path is ${result.successOutcome}.  
+
+⚠️ NEGATIVES
+There are certain hidden influences around you.  
+Some energies indicate that your journey may be ${result.futureOutcome}.  
+
+🔮 FUTURE
+Your life direction is shifting slowly.  
+This phase will last approximately ${result.timePeriod}.  
+Important changes are approaching soon.  
+
+💍 MARRIAGE LIFE
+Your destiny reveals a strong connection with someone whose name carries the letter "${result.marriageLetter.toUpperCase()}".  
+This connection will play an important role in your emotional life.  
+
+🔥 ENEMY STATUS
+There are people who may not wish for your success.  
+Stay careful with trust and avoid sharing your plans with everyone.  
+
+✨ The universe gives signals… it's up to you to understand them.
+
+  `;
+
   typeEffect(text);  
   saveToFirebase(result);  
-}        
-  
-function saveToFirebase(result){      
+}function saveToFirebase(result){      
   db.collection("astro_users").add({      
     name: answers[0],      
     age: answers[1],      
