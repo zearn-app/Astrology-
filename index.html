@@ -1,287 +1,122 @@
-<!DOCTYPE html>  
-<html lang="en">  
-<head>  
-<meta charset="UTF-8">  
-<meta name="viewport" content="width=device-width, initial-scale=1.0">  
-<title>Astro Reveal ✨</title>  
-  
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">  
-  
-<style>  
-body {  
-  margin: 0;  
-  font-family: 'Poppins', sans-serif;  
-  background: radial-gradient(circle at top, #0f0c29, #302b63, #24243e);  
-  color: white;  
-  display: flex;  
-  justify-content: center;  
-  align-items: center;  
-  height: 100vh;  
-  overflow: hidden;  
-}  
-  
-.container {  
-  width: 90%;  
-  max-width: 400px;  
-  text-align: center;  
-}  
-  
-.card {  
-  background: rgba(255,255,255,0.05);  
-  padding: 25px;  
-  border-radius: 20px;  
-  backdrop-filter: blur(10px);  
-  box-shadow: 0 0 20px rgba(255,255,255,0.1);  
-  animation: fadeIn 0.6s ease;  
-}  
-  
-input {  
-  width: 100%;  
-  padding: 12px;  
-  margin-top: 15px;  
-  border-radius: 10px;  
-  border: none;  
-  outline: none;  
-}  
-  
-button {  
-  margin-top: 20px;  
-  padding: 12px 20px;  
-  border: none;  
-  border-radius: 20px;  
-  background: linear-gradient(45deg, #ff6ec4, #7873f5);  
-  color: white;  
-  cursor: pointer;  
-  font-weight: bold;  
-}  
-  
-button:hover {  
-  opacity: 0.8;  
-}  
-  
-@keyframes fadeIn {  
-  from { opacity: 0; transform: translateY(20px); }  
-  to { opacity: 1; transform: translateY(0); }  
-}  
-  
-.result {  
-  font-size: 14px;  
-  line-height: 1.6;  
-}  
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Astro Reveal ✨</title>
 
-.loader {
-  margin-top: 20px;
-  font-size: 14px;
-  opacity: 0.8;
-  animation: pulse 1.5s infinite;
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
 }
 
-@keyframes pulse {
-  0% {opacity: 0.3;}
-  50% {opacity: 1;}
-  100% {opacity: 0.3;}
+body {
+  height: 100vh;
+  background: radial-gradient(circle at top, #1a1a2e, #0f0f1a);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  color: white;
 }
-</style>  
-</head>  
-  
-<body>  
-  
-<div class="container">  
-  <div class="card" id="card">  
-    <h2 id="question">Enter your name</h2>  
-    <input id="input" placeholder="Type here...">  
-    <button onclick="next()">Next ✨</button>  
-  </div>  
-</div>  
 
-<!-- 🔥 Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+/* Stars Background */
+.stars {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+}
+
+.stars::after {
+  content: "";
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: white;
+  box-shadow: 
+    50px 100px white, 150px 200px white, 300px 50px white,
+    500px 300px white, 700px 150px white, 900px 400px white;
+  animation: twinkle 3s infinite alternate;
+}
+
+@keyframes twinkle {
+  from { opacity: 0.3; }
+  to { opacity: 1; }
+}
+
+/* Container */
+.container {
+  text-align: center;
+  z-index: 2;
+}
+
+/* Title */
+h1 {
+  font-size: 3rem;
+  margin-bottom: 10px;
+  background: linear-gradient(45deg, #ffccff, #66ccff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Subtitle */
+p {
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+  color: #ccc;
+}
+
+/* Button */
+button {
+  padding: 15px 40px;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  background: linear-gradient(45deg, #ff4ecd, #7b5cff);
+  color: white;
+  transition: 0.3s;
+  box-shadow: 0 0 20px rgba(255, 78, 205, 0.6);
+}
+
+button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 30px rgba(123, 92, 255, 0.8);
+}
+
+/* Glow animation */
+@keyframes glow {
+  0% { box-shadow: 0 0 10px #ff4ecd; }
+  100% { box-shadow: 0 0 25px #7b5cff; }
+}
+
+button {
+  animation: glow 1.5s infinite alternate;
+}
+</style>
+</head>
+
+<body>
+
+<div class="stars"></div>
+
+<div class="container">
+  <h1>Astro Reveal ✨</h1>
+  <p>Discover your hidden destiny 🔮</p>
+  <button onclick="goToMain()">Enter</button>
+</div>
 
 <script>
-// 🔥 Firebase Config
-const firebaseConfig = {    
-  apiKey: "AIzaSyAbYt_z5GaqOTcVlz3FRjssTwC7Uzv_MdA",    
-  authDomain: "information-b9593.firebaseapp.com",    
-  projectId: "information-b9593",    
-  storageBucket: "information-b9593.firebasestorage.app",    
-  messagingSenderId: "767588407430",    
-  appId: "1:767588407430:web:006bb7ff0b7c66b751d907",    
-  measurementId: "G-CZ9KF73J6T"    
-};    
-
-firebase.initializeApp(firebaseConfig);    
-const db = firebase.firestore();    
-
-let step = 0;      
-let answers = [];      
-
-const questions = [      
-  "Enter your name",      
-  "Your age",      
-  "Your place",      
-  "Your lucky number",      
-  "A name you hate",      
-  "A name you love",      
-  "Your future plan",      
-  "Your biggest fear",      
-  "Your dream",      
-  "Someone you trust the most"      
-];      
-
-function next() {      
-  const input = document.getElementById("input");      
-  if(input.value.trim() === "") return;    
-
-  answers.push(input.value);      
-  input.value = "";      
-  step++;      
-      
-  if (step < questions.length) {      
-    document.getElementById("question").innerText = questions[step];      
-  } else {      
-    loadingScreen();      
-  }      
-}      
-
-function loadingScreen(){    
-  document.getElementById("card").innerHTML = `    
-    <h2>🔮 Reading Your Stars...</h2>    
-    <div class="loader">Analyzing cosmic energy...</div>    
-  `;    
-
-  setTimeout(showResult, 3000);    
-}    
-
-// 🔤 Convert first letter to number
-function letterValue(name){
-  let char = name.trim().toLowerCase().charCodeAt(0);
-  return char - 96; // a=1, z=26
+function goToMain() {
+  window.location.href = "main.html";
 }
-
-// 🔮 Generate result using hidden logic
-function generateAstroResult(){
-  const name = answers[0];
-  const hateName = answers[4];
-  const loveName = answers[5];
-
-  const mainVal = letterValue(name);
-  const hateVal = letterValue(hateName);
-  const loveVal = letterValue(loveName);
-
-  // Future direction (hate name)
-  const futureOutcome = (hateVal % 2 === 0)
-    ? "moving in a stable direction"
-    : "facing some hidden challenges ahead";
-
-  // Success (love name)
-  const successOutcome = (loveVal % 2 === 0)
-    ? "aligned with success"
-    : "requiring more effort to reach success";
-
-  // Life phase (main name)
-  const lifePhase = (mainVal % 2 === 0)
-    ? "positive"
-    : "challenging";
-
-  // Time period
-  let length = name.length;
-  let timePeriod = "";
-
-  if(length <= 3){
-    timePeriod = (Math.random() > 0.5 ? "1 year" : "2 years");
-  } else if(length <= 9){
-    timePeriod = Math.floor(Math.random()*9 + 1) + " months";
-  } else {
-    timePeriod = Math.floor(Math.random()*25 + 5) + " days";
-  }
-
-  return {
-    futureOutcome,
-    successOutcome,
-    lifePhase,
-    timePeriod
-  };
-}
-
-function showResult() {      
-  const name = answers[0];      
-
-  const result = generateAstroResult();
-
-  document.getElementById("card").innerHTML = `      
-    <h2>✨ Astrology Reading ✨</h2>      
-    <p class="result" id="typing"></p>    
-  `;      
-
-  const text = `    
-Dear ${name} 🌌    
-
-The energy surrounding your path reveals something interesting…    
-
-A certain influence in your life carries a strong hidden vibration.    
-This vibration suggests that your future direction is ${result.futureOutcome}.    
-
-Your inner intentions and long-term vision show a clear sign —    
-the path you are walking is ${result.successOutcome}.    
-
-Right now, your life phase is entering a ${result.lifePhase} cycle.    
-This phase will continue for approximately ${result.timePeriod}.    
-
-During this time, your decisions, emotions, and surroundings    
-will shape a major turning point in your journey.    
-
-✨ The universe doesn’t decide your destiny…    
-but it always leaves clues for those who notice.    
-`;
-
-  typeEffect(text);
-
-  // 🔥 Save everything including result
-  saveToFirebase(result, text);
-}      
-
-function saveToFirebase(result, finalText){    
-  db.collection("astro_users").add({    
-    name: answers[0],    
-    age: answers[1],    
-    place: answers[2],    
-    luckyNumber: answers[3],    
-    hateName: answers[4],    
-    loveName: answers[5],    
-    futurePlan: answers[6],    
-    fear: answers[7],    
-    dream: answers[8],    
-    trustPerson: answers[9],    
-
-    // 🔮 Saved result
-    futureOutcome: result.futureOutcome,
-    successOutcome: result.successOutcome,
-    lifePhase: result.lifePhase,
-    timePeriod: result.timePeriod,
-    fullResult: finalText,
-
-    createdAt: new Date()    
-  })    
-  .then(() => console.log("Saved with result 🔥"))    
-  .catch((error) => console.error(error));    
-}    
-
-function typeEffect(text){    
-  let i = 0;    
-  const speed = 30;    
-  const typing = document.getElementById("typing");    
-
-  function type(){    
-    if(i < text.length){    
-      typing.innerHTML += text.charAt(i);    
-      i++;    
-      setTimeout(type, speed);    
-    }    
-  }    
-  type();    
-}    
 </script>
-  
-</body>  
+
+</body>
 </html>
