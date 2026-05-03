@@ -241,7 +241,7 @@ but it always leaves clues for those who notice.
   saveToFirebase(result, text);
 }      
 
-function saveToFirebase(result, finalText){    
+function saveToFirebase(result){    
   db.collection("astro_users").add({    
     name: answers[0],    
     age: answers[1],    
@@ -254,19 +254,17 @@ function saveToFirebase(result, finalText){
     dream: answers[8],    
     trustPerson: answers[9],    
 
-    // 🔮 Saved result
+    // 🔮 Only structured result (no full text)
     futureOutcome: result.futureOutcome,
     successOutcome: result.successOutcome,
     lifePhase: result.lifePhase,
     timePeriod: result.timePeriod,
-    fullResult: finalText,
 
     createdAt: new Date()    
   })    
-  .then(() => console.log("Saved with result 🔥"))    
+  .then(() => console.log("Saved (no full text) ✅"))    
   .catch((error) => console.error(error));    
-}    
-
+}
 function typeEffect(text){    
   let i = 0;    
   const speed = 30;    
