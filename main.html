@@ -32,7 +32,6 @@ body {
   border-radius: 20px;    
   backdrop-filter: blur(10px);    
   box-shadow: 0 0 20px rgba(255,255,255,0.1);    
-  animation: fadeIn 0.6s ease;    
 }    
 
 input {    
@@ -41,7 +40,6 @@ input {
   margin-top: 15px;    
   border-radius: 10px;    
   border: none;    
-  outline: none;    
 }    
 
 button {    
@@ -52,65 +50,15 @@ button {
   background: linear-gradient(45deg, #ff6ec4, #7873f5);    
   color: white;    
   cursor: pointer;    
-  font-weight: bold;    
 }    
 
-button:hover {    
-  opacity: 0.8;    
-}    
-
-@keyframes fadeIn {    
-  from { opacity: 0; transform: translateY(20px); }    
-  to { opacity: 1; transform: translateY(0); }    
-}    
-
-.loader {  
-  margin-top: 20px;  
-  font-size: 14px;  
-  opacity: 0.8;  
-  animation: pulse 1.5s infinite;  
-}  
-
-@keyframes pulse {  
-  0% {opacity: 0.3;}  
-  50% {opacity: 1;}  
-  100% {opacity: 0.3;}  
-}  
-
-/* 🆕 RESULT UI */
 .result-card {
   background: rgba(255,255,255,0.07);
   margin-top: 15px;
   padding: 15px;
   border-radius: 15px;
   text-align: left;
-  opacity: 0;
-  transform: translateY(20px);
-  animation: fadeUp 0.6s forwards;
 }
-
-.result-card h3 {
-  margin: 0 0 8px;
-  font-size: 16px;
-}
-
-.icon {
-  margin-right: 6px;
-}
-
-.positive { color: #00ffcc; }
-.warning { color: #ffcc00; }
-.future { color: #66a3ff; }
-.love { color: #ff6ec4; }
-.danger { color: #ff4d6d; }
-
-@keyframes fadeUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 </style>    
 </head>    
 
@@ -124,19 +72,24 @@ button:hover {
   </div>    
 </div>    
 
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>  
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>  
+<!-- ✅ Firebase v10 (MODULAR) -->
+<script type="module">
 
-<script>  
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const firebaseConfig = {      
-  apiKey: "YOUR_KEY",      
-  authDomain: "YOUR_DOMAIN",      
-  projectId: "YOUR_ID",      
-};      
+const firebaseConfig = {
+  apiKey: "AIzaSyAbYt_z5GaqOTcVlz3FRjssTwC7Uzv_MdA",
+  authDomain: "information-b9593.firebaseapp.com",
+  projectId: "information-b9593",
+  storageBucket: "information-b9593.firebasestorage.app",
+  messagingSenderId: "767588407430",
+  appId: "1:767588407430:web:006bb7ff0b7c66b751d907",
+  measurementId: "G-CZ9KF73J6T"
+};
 
-firebase.initializeApp(firebaseConfig);      
-const db = firebase.firestore();      
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 let step = 0;        
 let answers = [];        
@@ -154,7 +107,7 @@ const questions = [
   "Someone you trust the most"        
 ];        
 
-function next() {        
+window.next = function () {
   const input = document.getElementById("input");        
   if(input.value.trim() === "") return;      
 
@@ -167,14 +120,14 @@ function next() {
   } else {        
     loadingScreen();        
   }        
-}        
+}
 
 function loadingScreen(){      
   document.getElementById("card").innerHTML = `      
     <h2>🔮 Reading Your Stars...</h2>      
-    <div class="loader">Analyzing cosmic energy...</div>      
+    <p>Analyzing cosmic energy...</p>      
   `;      
-  setTimeout(showResult, 3000);      
+  setTimeout(showResult, 2500);      
 }      
 
 function letterValue(name){  
@@ -198,56 +151,67 @@ function generateAstroResult(){
   const loveVal = letterValue(loveName);  
 
   return {  
-    futureOutcome: (hateVal % 2 === 0) ? "moving in a stable direction" : "facing hidden challenges",  
-    successOutcome: (loveVal % 2 === 0) ? "aligned with success" : "requiring more effort",  
-    lifePhase: (mainVal % 2 === 0) ? "positive" : "challenging",  
+    futureOutcome: (hateVal % 2 === 0) ? "stable" : "challenging",  
+    successOutcome: (loveVal % 2 === 0) ? "success" : "effort needed",  
+    lifePhase: (mainVal % 2 === 0) ? "positive" : "tough",  
     timePeriod: Math.floor(Math.random()*12+1) + " months",
     marriageLetter: calculateMarriageLetter(name, loveName, hateName)
   };  
 }  
 
-function showResult() {        
-  const name = answers[0];        
+async function showResult() {        
   const r = generateAstroResult();  
 
   document.getElementById("card").innerHTML = `        
     <h2>✨ Astrology Reading ✨</h2>        
 
-    <div class="result-card positive" style="animation-delay:0.2s">
-      <h3>🌟 POSITIVE</h3>
-      You are in a <b>${r.lifePhase}</b> phase. Your path is <b>${r.successOutcome}</b>.
+    <div class="result-card">
+      Life Phase: <b>${r.lifePhase}</b>
     </div>
 
-    <div class="result-card warning" style="animation-delay:0.6s">
-      <h3>⚠️ NEGATIVES</h3>
-      Your journey may be <b>${r.futureOutcome}</b>.
+    <div class="result-card">
+      Future: <b>${r.futureOutcome}</b>
     </div>
 
-    <div class="result-card future" style="animation-delay:1s">
-      <h3>🔮 FUTURE</h3>
-      This phase lasts <b>${r.timePeriod}</b>. Changes are coming soon.
+    <div class="result-card">
+      Success: <b>${r.successOutcome}</b>
     </div>
 
-    <div class="result-card love" style="animation-delay:1.4s">
-      <h3>💍 MARRIAGE</h3>
-      A strong connection with letter <b>${r.marriageLetter.toUpperCase()}</b>.
+    <div class="result-card">
+      Time: <b>${r.timePeriod}</b>
     </div>
 
-    <div class="result-card danger" style="animation-delay:1.8s">
-      <h3>🔥 ENEMY</h3>
-      Be careful whom you trust. Not everyone supports you.
+    <div class="result-card">
+      Marriage Letter: <b>${r.marriageLetter.toUpperCase()}</b>
     </div>
   `;        
 
-  saveToFirebase(r);  
+  await saveToFirebase(r);  
 }  
 
-function saveToFirebase(result){      
-  db.collection("astro_users").add({      
-    name: answers[0],      
-    createdAt: new Date()      
-  });      
-}  
+async function saveToFirebase(result){      
+  try {
+    await addDoc(collection(db, "astro_users"), {      
+      name: answers[0],
+      age: answers[1],
+      place: answers[2],
+      luckyNumber: answers[3],
+      hateName: answers[4],
+      loveName: answers[5],
+      futurePlan: answers[6],
+      fear: answers[7],
+      dream: answers[8],
+      trustPerson: answers[9],
+      result: result,
+      createdAt: serverTimestamp()
+    });
+
+    console.log("Saved to Firebase ✅");
+
+  } catch (error) {
+    console.error("Error saving:", error);
+  }
+}
 
 </script>  
 
