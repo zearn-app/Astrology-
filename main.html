@@ -95,20 +95,21 @@ let step = 0;
 let answers = [];        
 
 const questions = [        
-  "Enter your name",        
+  "What do people usually call you?",        
   "Your age",        
   "Your place",        
-  "Your lucky number",        
-  "A name you hate",        
-  "A name you love",        
+  "Pick a number that always feels lucky to you 🍀",        
+  "A name that brings bad memories",        
+  "Think of a name that brings a smile to your face 😊",        
   "Your future plan",        
-  "Your biggest fear",        
+  "What scares you the most in life?",        
   "Your dream",        
-  "Someone you trust the most"        
+  "If something went wrong, whose number would you dial without thinking? 📞"        
 ];        
 
 window.next = function () {
-  const input = document.getElementById("input");        
+  const input =to
+document.getElementById("input");        
   if(input.value.trim() === "") return;      
 
   answers.push(input.value);        
